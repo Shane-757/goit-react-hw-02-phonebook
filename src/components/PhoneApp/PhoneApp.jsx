@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
+import ContactForm from 'components/ContactForm/ContactFrom';
+import ContactList from 'components/ContactList/ContactList';
+import Filter from 'components/Filter/Filter';
+
 
 
 class PhoneApp extends Component {
@@ -8,61 +12,75 @@ class PhoneApp extends Component {
     initialContacts: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
+        name: PropTypes.string.isRequired,
+        number: PropTypes.string.isRequired,
       })
-    )
+    ),
   };
 
   static defaultProps = {
-    initialContacts: []
+    initialContacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
   };
 
   constructor(props) {
     super(props);
     this.state = {
       contacts: props.initialContacts,
-      name: ''
+      name: '',
+      number: '',
+      filter: '',
     };
   }
 
   handleInputChange = (event) => {
-    this.setState({ name: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
   };
 
   handleSubmit = (event) => {
     event.preventDefault();
     const newContact = {
       id: nanoid(),
-      name: this.state.name
+      name: this.state.name,
+      number: this.state.number,
     };
     this.setState((prevState) => ({
       contacts: [...prevState.contacts, newContact],
-      name: ''
+      name: '',
+      number: '',
     }));
   };
 
+  handleFilterChange = (filterValue) => {
+    this.setState({ filter: filterValue });
+  };
+
+  getFilteredContacts = () => {
+    const { contacts, filter } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(normalizedFilter) ||
+      contact.number.includes(filter)
+    );
+  };
+
   render() {
+    const filteredContacts = this.getFilteredContacts();
     return (
       <div className="PhoneApp">
         <h1>Phone Book</h1>
-        <form onSubmit={this.handleSubmit}>
-          <h2>Name</h2>
-          <input
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan."
-            required
-            value={this.state.name}
-            onChange={this.handleInputChange}
-          />
-          <button type="submit">Add Contact</button>
-        </form>
-        <ul>
-          {this.state.contacts.map((contact) => (
-            <li key={contact.id}>{contact.name}</li>
-          ))}
-        </ul>
+        <ContactForm
+          name={this.state.name}
+          number={this.state.number}
+          handleInputChange={this.handleInputChange}
+          handleSubmit={this.handleSubmit}
+        />
+        <Filter onFilterChange={this.handleFilterChange} />
+        <ContactList contacts={filteredContacts} />
       </div>
     );
   }
