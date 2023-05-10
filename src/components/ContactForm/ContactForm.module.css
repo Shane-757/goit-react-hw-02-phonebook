@@ -11,6 +11,11 @@
 
 .addButton{
     margin-top: 20px;
+    box-shadow: black 5px -5px 5px;
+}
+.addButton:hover{
+    background-color: #2f8e2f;
+    cursor: pointer;
 }
 
 .formName{

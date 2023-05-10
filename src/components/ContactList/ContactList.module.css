@@ -13,3 +13,11 @@
     text-align: center;
     list-style: none;
 }
+.deleteButton{
+    margin-left: 10px;
+    box-shadow: black 5px -5px 5px;
+}
+.deleteButton:hover{
+    background-color: #f32323;
+    cursor: pointer;
+}
