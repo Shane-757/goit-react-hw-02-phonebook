@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-//import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import ContactForm from 'components/ContactForm/ContactFrom';
 import ContactList from 'components/ContactList/ContactList';
